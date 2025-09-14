@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Extrator de Códigos</title>
+<link rel="icon" href="icone.png" type="image/png">
+<style>
+body {
+font-family: Arial, sans-serif;
+background-color: #e6f0fa;
+padding: 40px;
+}
+.container {
+position: relative;
+}
+textarea {
+width: 100%;
+padding: 12px;
+font-size: 16px;
+box-sizing: border-box;
+border: 1px solid #99c2ff;
+background-color: #f4faff;
+}
+.clear-btn {
+position: absolute;
+top: 10px;
+right: 10px;
+background-color: #0077cc;
+color: white;
+border: none;
+border-radius: 50%;
+width: 30px;
+height: 30px;
+font-size: 16px;
+cursor: pointer;
+}
+button {
+width: 100%;
+padding: 12px;
+margin-top: 10px;
+font-size: 16px;
+background-color: #005bb5;
+color: white;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+}
+#resultado-container {
+position: relative;
+margin-top: 20px;
+}
+#resultado {
+padding: 15px;
+background-color: #ffffff;
+border: 1px solid #3399ff;
+font-weight: bold;
+color: #003366;
+}
+.copy-btn {
+position: absolute;
+top: 10px;
+right: 10px;
+background-color: #3399ff;
+color: white;
+border: none;
+border-radius: 50%;
+width: 30px;
+height: 30px;
+font-size: 16px;
+cursor: pointer;
+}
+footer {
+margin-top: 40px;
+text-align: center;
+font-size: 14px;
+color: #336699;
+}
+</style>
+</head>
+<body>
+<h2>📌</h2>
+
+
+<div class="container">
+<textarea id="entrada" rows="12" placeholder="Cole aqui o conteúdo..."></textarea>
+<button class="clear-btn" onclick="limparCampo()">X</button>
+</div>
+
+
+<button onclick="extrairCodigos()">Extrair Códigos</button>
+
+
+<div id="resultado-container">
+<div id="resultado"></div>
+<button class="copy-btn" onclick="copiarResultado()">📋</button>
+</div>
+
+
+<footer>
+Criado por <strong>sasouza.adm</strong>
+</footer>
+
+
+<script>
+function extrairCodigos() {
+const texto = document.getElementById("entrada").value;
+const padrao = /\b\d{5}\b/g;
+const encontrados = texto.match(padrao);
+const unicos = encontrados ? [...new Set(encontrados)] : [];
+const resultado = unicos.length > 0
+? unicos.join(", ")
+: "Nenhum código de cinco dígitos encontrado.";
+document.getElementById("resultado").innerText = resultado;
+}
+
+
+function limparCampo() {
+document.getElementById("entrada").value = "";
+document.getElementById("resultado").innerText = "";
+}
+
+
+function copiarResultado() {
+const resultado = document.getElementById("resultado").innerText;
+if (resultado) {
+navigator.clipboard.writeText(resultado)
+.then(() => alert("Resultado copiado!"))
+.catch(() => alert("Erro ao copiar."));
+}
+}
+</script>
+</body>
+</html>
+
+
+
+
