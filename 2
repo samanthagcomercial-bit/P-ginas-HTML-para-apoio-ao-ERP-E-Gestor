@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Extrator de Dados</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+margin: 20px;
+}
+
+
+label {
+font-weight: bold;
+}
+
+
+textarea {
+width: 100%;
+box-sizing: border-box;
+margin-bottom: 10px;
+resize: vertical;
+font-family: monospace;
+}
+
+
+button {
+padding: 8px 16px;
+font-size: 1rem;
+cursor: pointer;
+}
+
+
+h2 {
+margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+
+<h1>Extrator de Códigos e Valores</h1>
+
+
+<label for="inputText">1º CAMPO DE COLAGEM (somente texto):</label>
+<textarea id="inputText" rows="10" placeholder="Cole aqui o trecho de texto com colunas 'descrição' e 'valor'"></textarea>
+
+
+<button onclick="processar()">Processar</button>
+
+
+<h2>1º Subcampo de Resultado do Campo 1</h2>
+<textarea id="resultado1" rows="5" readonly placeholder="Segundos conjuntos de 5 dígitos extraídos..."></textarea>
+
+
+<h2>2º Subcampo de Resultado do Campo 1</h2>
+<textarea id="resultado2" rows="5" readonly placeholder="Valores numéricos extraídos (sem R$)..."></textarea>
+
+
+<h2>3º Subcampo de Resultado do 1º subcampo de Resultado do Campo 1</h2>
+<textarea id="resultado3" rows="3" readonly placeholder="Códigos do 1º subcampo, separados por vírgula..."></textarea>
+
+
+<script>
+function processar() {
+const text = document.getElementById('inputText').value;
+const linhas = text.split(/\r?\n/);
+const codigos = [];
+const valores = [];
+
+
+linhas.forEach(linha => {
+if (!linha.trim()) return;
+
+
+// 1. Extrair todos os grupos de 5 dígitos
+const grupos5 = linha.match(/\b\d{5}\b/g);
+if (grupos5 && grupos5.length >= 2) {
+// Pegar o segundo grupo
+codigos.push(grupos5[1]);
+}
+
+
+// 2. Extrair o primeiro valor em moeda (formato R$ 1.234,56)
+const valorMatch = linha.match(/R\$\s*[\d.]+,\d{2}/);
+if (valorMatch) {
+// Remover "R$" e manter apenas a parte numérica
+valores.push(valorMatch[0].replace(/R\$\s*/, ''));
+}
+});
+
+
+// Preencher subcampos de resultado
+document.getElementById('resultado1').value = codigos.join('\n');
+document.getElementById('resultado2').value = valores.join('\n');
+document.getElementById('resultado3').value = codigos.join(', ');
+}
+</script>
+
+
+<footer>
+<p>Criadora: sasouza.adm</p>
+</footer>
+
+
+</body>
+</html>
+```
