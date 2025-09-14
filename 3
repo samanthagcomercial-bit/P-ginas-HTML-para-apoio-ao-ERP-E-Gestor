@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<title>Extrator de Vendedores</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+margin: 20px;
+line-height: 1.5;
+}
+
+
+textarea {
+width: 100%;
+height: 80px;
+margin-bottom: 10px;
+font-family: monospace;
+font-size: 14px;
+resize: vertical;
+}
+
+
+label {
+display: block;
+margin: 15px 0 5px;
+font-weight: bold;
+}
+
+
+button {
+padding: 8px 16px;
+font-size: 14px;
+cursor: pointer;
+}
+</style>
+</head>
+<body>
+<h1>Extrator de Vendedores</h1>
+
+
+<label for="inputText">1º Campo de Colagem (somente texto)</label>
+<textarea id="inputText"
+placeholder="Cole aqui a tabela inteira (colunas separadas por tab)…"></textarea>
+
+
+<label for="inputCodes">2º Campo de Colagem (lista de códigos)</label>
+<textarea id="inputCodes"
+placeholder="Ex.: 52771, 52770, 52772"></textarea>
+
+
+<button id="processBtn">Processar</button>
+
+
+<label for="result1">1º Campo de Resultado (código – vendedor)</label>
+<textarea id="result1" readonly></textarea>
+
+
+<label for="result2">2º Campo de Resultado (vendedores na ordem dos códigos)</label>
+<textarea id="result2" readonly></textarea>
+
+
+<label for="result4">4º Campo de Resultado (primeira letra maiúscula)</label>
+<textarea id="result4" readonly></textarea>
+
+
+<script>
+document.getElementById('processBtn').addEventListener('click', () => {
+const rawText = document.getElementById('inputText').value.trim();
+const rawCodes = document.getElementById('inputCodes').value;
+
+
+// Quebra em linhas e descarta o cabeçalho
+const lines = rawText.split('\n').slice(1);
+
+
+// Monta um mapa código → vendedor
+const codeToVendor = {};
+lines.forEach(line => {
+// separa por tab, remove células vazias
+const cols = line.split('\t').map(c => c.trim()).filter(c => c);
+if (cols.length >= 3) {
+const code = cols[0];
+const vendor = cols[2];
+codeToVendor[code] = vendor;
+}
+});
+
+
+// 1º Resultado: lista completa de "código - vendedor"
+const result1 = Object.entries(codeToVendor)
+.map(([code, vendor]) => `${code} - ${vendor}`);
+
+
+// 2º Resultado: lê a sequência de códigos e retorna só o vendedor
+const codesOrder = rawCodes
+.split(/[^0-9]+/) // tudo que não for dígito
+.filter(tok => tok);
+
+
+const result2 = codesOrder
+.map(code => codeToVendor[code] || `(código ${code} não encontrado)`);
+
+
+// 4º Resultado: formata cada nome com apenas a primeira letra maiúscula
+const result4 = result2.map(name => {
+if (!name || name.startsWith('(código')) return name;
+const lower = name.toLowerCase();
+return lower[0].toUpperCase() + lower.slice(1);
+});
+
+
+// Preenche as áreas de resultado
+document.getElementById('result1').value = result1.join('\n');
+document.getElementById('result2').value = result2.join('\n');
+document.getElementById('result4').value = result4.join('\n');
+});
+</script>
+
+
+<p>Criado por: sasouza.adm</p>
+</body>
+</html>
